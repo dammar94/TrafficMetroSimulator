@@ -85,4 +85,8 @@ public class GraphHolder {
     void displayGraph() {
         this.graph.display();
     }
+
+    Node getNodeByName(String stringa) {
+        return graph.getNode(stringa);
+    }
 }

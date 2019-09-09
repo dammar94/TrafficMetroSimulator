@@ -5,11 +5,15 @@
  */
 package trafficmetrosimulator;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JRootPane;
 
 /**
  * Questa classe è responsabile di tutte le iterazioni di input e output tramite
@@ -70,8 +74,9 @@ public class Display {
                 + "ulteriormente in piena libertà il tuo ambiente di lavoro. Consigliamo di seguire questo\n"
                 + "tutorial se non si è ancora a proprio agio con il programma. Ti ricordiamo inoltre che puoi\n"
                 + "disattivare quando vuoi questa procedura dal menù Opzioni all'avvio dell'applicazione.\n"
-                + "Cominciamo!\n");
-        breathe();
+                + "Cominciamo! Premere INVIO...\n");
+        //breathe();
+        getCh();
     }
 
     /**
@@ -155,8 +160,9 @@ public class Display {
         print_Line();
         System.out.println("Passiamo ora a creare la rete dei trasporti, "
                 + "la quale sarà composta da diverse linee che\n"
-                + "noi definiremo ad una ad una.\n");
-        ArrayList<ArrayList<String>> fermate = new ArrayList<ArrayList<String>>();
+                + "noi definiremo ad una ad una. Premere INVIO per continuare...\n");
+        getCh();
+        ArrayList<ArrayList<String>> fermate = new ArrayList<>();
         String nomeLinea;
         String answer = "S";
         while (answer.toUpperCase().equals("S")) {
@@ -236,12 +242,56 @@ public class Display {
                 + "più breve che li porti dal loro punto di generazione al punto di arrivo). Si\n"
                 + "possono creare tutti i PassengersGenerator che si desidera per la simulazione.\n"
                 + "E' inutile dire che una simulazione senza nemmeno un PassengerGenerator ha poco\n"
-                + "senso di esistere. Cominciamo infatti a crearne alcuni.\n");
-        ArrayList<PassengerGenerator> elencoPassengerGenerator = new ArrayList<>();
-        while(true) {
-            System.out.println("Creazione del PassengerGenerator numero " + (elencoPassengerGenerator.size()+1) );
-            System.out.println("Inserire l'ID della fermata di partenza scegliendo tra i seguenti");
-            workSpace.printElencofermate();
+                + "senso di esistere. Cominciamo infatti a crearne alcuni. Premere INVIO per continuare...\n");
+        getCh();
+        String answer = "S";
+        while(answer.toUpperCase().equals("S")) {
+            int numeroPassengerGenerators = workSpace.getNumberOfPassengerGenerators();
+            System.out.println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + "," );
+            //Otteniamo la fermata di partenza.
+            System.out.println("Scegliere la fermata di partenza inserendo l'ID corrispondente tra i seguenti");
+            this.print_Elencofermate();
+            System.out.println("Inserire l'ID:");
+            Scanner in = new Scanner(System.in);
+            String idFermataPartenza = in.nextLine();
+            //otteniamo la fermata dall'input, altrimenti ERRORE
+            String fermataPartenza = null;
+            try {
+                fermataPartenza = this.getFermataFromID(idFermataPartenza);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            //Otteniamo la fermata di arrivo.
+            System.out.println("Scegliere la fermata di arrivo inserendo l'ID corrispondente tra i seguenti");
+            this.print_Elencofermate();
+            System.out.println("Inserire l'ID:");
+            Scanner in2 = new Scanner(System.in);
+            String idFermataArrivo = in.nextLine();
+            //otteniamo la fermata dall'input, altrimenti ERRORE
+            String fermataArrivo = null;
+            try {
+                fermataArrivo = this.getFermataFromID(idFermataArrivo);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            //Otteniamo la frequency di generazione.
+            System.out.println("Inserire quanti viaggiatori generare ogni ora:");
+            Scanner in3 = new Scanner(System.in);
+            int frequency = in.nextInt();
+            //Inviamo i dati alla workSpace ed eventualmente ripetiamo.
+            workSpace.addNewPassengerGenerator(fermataPartenza, fermataArrivo, frequency);
+            System.out.println("PassengerGenerator creato. Vuoi crearne un altro? [S/N]");
+            Scanner in4 = new Scanner(System.in);
+            // Check su [S/N].
+            while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
+                System.out.println("ERRORE: Input non valido. \n");
+                breathe();
+                //System.out.println("Il nome inserito è: " + nomeWorkSpace);
+                System.out.println("Vuoi crearne un altro? [S/N]");
+                answer = in.nextLine();
+            }
         }
     }
 
@@ -297,6 +347,61 @@ public class Display {
         while (display.active) {
             display.act();
         }
+    }
+
+    private void print_Elencofermate() {
+        ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
+        for(int i=0; i<fermate.size(); i++){
+            for(int j=0; j<fermate.get(i).size(); j++){
+                if(j!=0){
+                    System.out.println(fermate.get(i).get(j) + " -> "+i+"#"+j);
+                }
+            }
+        }
+    }
+
+    /**
+     * Ottiene una stringa col nome della fermata a partire da un ID del tipo
+     * 3#12.
+     * @param idFermata
+     * @return 
+     */
+    private String getFermataFromID(String idFermata) {
+        ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
+        String[] parts = idFermata.split("#");
+        return fermate.get(Integer.parseInt(parts[0])).get(Integer.parseInt(parts[1]));
+    }
+    
+    /**
+     * Equivalente di getch() di C ma in Java.
+     */
+    public static void getCh() {  
+        final JFrame frame = new JFrame();  
+        synchronized (frame) {  
+            frame.setUndecorated(true);  
+            frame.getRootPane().setWindowDecorationStyle(JRootPane.FRAME);  
+            frame.addKeyListener(new KeyListener() {
+                @Override 
+                public void keyPressed(KeyEvent e) {  
+                    synchronized (frame) {  
+                        frame.setVisible(false);  
+                        frame.dispose();  
+                        frame.notify();  
+                    }  
+                }  
+                @Override 
+                public void keyReleased(KeyEvent e) {  
+                }  
+                @Override 
+                public void keyTyped(KeyEvent e) {  
+                }  
+            });  
+            frame.setVisible(true);  
+            try {  
+                frame.wait();  
+            } catch (InterruptedException e1) {  
+            }  
+        }  
     }
 
 }

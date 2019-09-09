@@ -6,6 +6,7 @@
 package trafficmetrosimulator;
 
 import java.util.ArrayList;
+import org.graphstream.graph.Node;
 
 /**
  * Questa classe contiene e si occupa di gestire tutti i dettagli dell'ambiente
@@ -22,6 +23,11 @@ public class WorkSpace {
      */
     private ArrayList<ArrayList<String>> fermate;
     /**
+     * Lista dei PassengerGenerator disponibili per la simulazione.
+     */
+    private ArrayList<PassengerGenerator> listaPassengerGenerators;
+    
+    /**
      * GraphHolder della WorkSpace.
      */
     private GraphHolder graphHolder;
@@ -33,6 +39,10 @@ public class WorkSpace {
     public void setFermate(ArrayList<ArrayList<String>> fermate) {
         this.fermate = fermate;
     }
+    
+    public ArrayList<ArrayList<String>> getFermate() {
+        return fermate;
+    }
 
     /**
      * Imposta il nome della WorkSpace alla creazione.
@@ -42,6 +52,25 @@ public class WorkSpace {
     public WorkSpace(String nomeWorkSpace) {
         this.nomeWorkSpace = nomeWorkSpace;
         this.fermate = new ArrayList<ArrayList<String>>();
+        this.listaPassengerGenerators = new ArrayList<PassengerGenerator>();
+    }
+
+    /**
+     * Crea e aggiunge alla propria lista un nuovo PassengerGenerator partendo dai
+     * paramentri in input.
+     * @param fermataPartenza
+     * @param fermataArrivo
+     * @param frequency 
+     */
+    void addNewPassengerGenerator(String fermataPartenza, String fermataArrivo, int frequency) {
+        Node startNode = graphHolder.getNodeByName(fermataPartenza);
+        Node arrivalNode = graphHolder.getNodeByName(fermataArrivo);
+        PassengerGenerator passengerGenerator = new PassengerGenerator(startNode, arrivalNode, frequency);
+        this.listaPassengerGenerators.add(passengerGenerator);
+    }
+
+    int getNumberOfPassengerGenerators() {
+        return (this.listaPassengerGenerators.size() + 1);
     }
 
 }
