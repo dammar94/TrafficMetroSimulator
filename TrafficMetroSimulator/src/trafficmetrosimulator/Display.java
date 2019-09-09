@@ -74,9 +74,9 @@ public class Display {
                 + "ulteriormente in piena libertà il tuo ambiente di lavoro. Consigliamo di seguire questo\n"
                 + "tutorial se non si è ancora a proprio agio con il programma. Ti ricordiamo inoltre che puoi\n"
                 + "disattivare quando vuoi questa procedura dal menù Opzioni all'avvio dell'applicazione.\n"
-                + "Cominciamo! Premere INVIO...\n");
-        //breathe();
-        getCh();
+                + "Cominciamo!\n");
+        breathe();
+        //getCh();
     }
 
     /**
@@ -160,8 +160,8 @@ public class Display {
         print_Line();
         System.out.println("Passiamo ora a creare la rete dei trasporti, "
                 + "la quale sarà composta da diverse linee che\n"
-                + "noi definiremo ad una ad una. Premere INVIO per continuare...\n");
-        getCh();
+                + "noi definiremo ad una ad una. \n");
+        breathe();
         ArrayList<ArrayList<String>> fermate = new ArrayList<>();
         String nomeLinea;
         String answer = "S";
@@ -242,14 +242,19 @@ public class Display {
                 + "più breve che li porti dal loro punto di generazione al punto di arrivo). Si\n"
                 + "possono creare tutti i PassengersGenerator che si desidera per la simulazione.\n"
                 + "E' inutile dire che una simulazione senza nemmeno un PassengerGenerator ha poco\n"
-                + "senso di esistere. Cominciamo infatti a crearne alcuni. Premere INVIO per continuare...\n");
-        getCh();
+                + "senso di esistere. Cominciamo infatti a crearne alcuni.\n");
+        //getCh();
+        breathe();
+        //Creiamo la corrispondenza ID<->fermata necessaria in questa comunicazione utente<->applicazione.
+        /////DA IMPLEMENTARE!!!
         String answer = "S";
         while(answer.toUpperCase().equals("S")) {
             int numeroPassengerGenerators = workSpace.getNumberOfPassengerGenerators();
-            System.out.println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + "," );
+            System.out.println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + ":" );
+            breathe();
             //Otteniamo la fermata di partenza.
             System.out.println("Scegliere la fermata di partenza inserendo l'ID corrispondente tra i seguenti");
+            breathe();breathe();
             this.print_Elencofermate();
             System.out.println("Inserire l'ID:");
             Scanner in = new Scanner(System.in);
@@ -264,6 +269,7 @@ public class Display {
             }
             //Otteniamo la fermata di arrivo.
             System.out.println("Scegliere la fermata di arrivo inserendo l'ID corrispondente tra i seguenti");
+            breathe();breathe();
             this.print_Elencofermate();
             System.out.println("Inserire l'ID:");
             Scanner in2 = new Scanner(System.in);
@@ -284,6 +290,7 @@ public class Display {
             workSpace.addNewPassengerGenerator(fermataPartenza, fermataArrivo, frequency);
             System.out.println("PassengerGenerator creato. Vuoi crearne un altro? [S/N]");
             Scanner in4 = new Scanner(System.in);
+            answer = in.nextLine();
             // Check su [S/N].
             while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
                 System.out.println("ERRORE: Input non valido. \n");
