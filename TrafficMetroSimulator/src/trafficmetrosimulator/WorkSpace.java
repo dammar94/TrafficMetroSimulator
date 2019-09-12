@@ -25,16 +25,14 @@ public class WorkSpace {
     /**
      * Lista dei PassengerGenerator disponibili per la simulazione.
      */
-    private ArrayList<PassengerGenerator> listaPassengerGenerators;
+    private final ArrayList<PassengerGenerator> listaPassengerGenerators;
     
     /**
      * GraphHolder della WorkSpace.
      */
     private GraphHolder graphHolder;
 
-    public void setGraphHolder(GraphHolder graphHolder) {
-        this.graphHolder = graphHolder;
-    }
+    
 
     public void setFermate(ArrayList<ArrayList<String>> fermate) {
         this.fermate = fermate;
@@ -47,12 +45,12 @@ public class WorkSpace {
     /**
      * Imposta il nome della WorkSpace alla creazione.
      *
-     * @param NomeWorkSpace
+     * @param nomeWorkSpace
      */
     public WorkSpace(String nomeWorkSpace) {
         this.nomeWorkSpace = nomeWorkSpace;
-        this.fermate = new ArrayList<ArrayList<String>>();
-        this.listaPassengerGenerators = new ArrayList<PassengerGenerator>();
+        this.fermate = new ArrayList<>();
+        this.listaPassengerGenerators = new ArrayList<>();
     }
 
     /**
@@ -71,6 +69,16 @@ public class WorkSpace {
 
     int getNumberOfPassengerGenerators() {
         return (this.listaPassengerGenerators.size() + 1);
+    }
+
+    void generateGraph() {
+        GraphHolder graphHolder = new GraphHolder();
+        graphHolder.generateGraphFromFermate(fermate);
+        this.graphHolder = graphHolder;
+    }
+
+    void displayGraph() {
+        graphHolder.displayGraph();
     }
 
 }

@@ -10,7 +10,7 @@ import org.graphstream.graph.Node;
 /** Questa classe è di vitale importanza per la simulazione; Gestiste
  * l'affluenza dei passeggeri nella rete secondo tre parametri: startNode, 
  * arrivalNode e frequency (ovvero, il nodo di partenza, quello d'arrivo e la
- * frequenza con cui vengono generati i viaggiatori).
+ * frequenza oraria con cui vengono generati i viaggiatori).
  *
  * @author damiano
  */

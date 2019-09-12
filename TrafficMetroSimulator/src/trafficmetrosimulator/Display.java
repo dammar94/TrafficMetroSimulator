@@ -7,6 +7,7 @@ package trafficmetrosimulator;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -45,9 +46,10 @@ public class Display {
     /**
      * Mostra il messaggio introduttivo all'applicazione.
      */
-    public void print_IntroMessage() {
-        this.print_Line();
+    private void print_IntroMessage() {
+        //this.print_Line();
         System.out.println("Benvenuti in TrafficMetroSimulator");
+        breathe();
     }
 
     /**
@@ -65,18 +67,22 @@ public class Display {
     /**
      * Mostra il messaggio introduttivo all'applicazione.
      */
-    public void print_NuovaWorkSpace_IntroMessage() {
+    private void print_NuovaWorkSpace_IntroMessage() {
         this.print_Line();
+//        System.out.println("Benvenuti nella procedura guidata alla creazione di una nuova Workspace.\n"
+//                + "Nella prima fase ci occuperemo di definire la rete dei trasporti sulla quale\n"
+//                + "navigheranno i mezzi; e nella seconda invece ci dedicheremo a tutti i dettagli necessari\n"
+//                + "all'avvio della prima simulazione. Una volta terminata questa procedura potrai modificare\n"
+//                + "ulteriormente in piena libertà il tuo ambiente di lavoro. Consigliamo di seguire questo\n"
+//                + "tutorial se non si è ancora a proprio agio con il programma. Ti ricordiamo inoltre che puoi\n"
+//                + "disattivare quando vuoi questa procedura dal menù Opzioni all'avvio dell'applicazione.\n"
+//                + "Cominciamo!\n");
         System.out.println("Benvenuti nella procedura guidata alla creazione di una nuova Workspace.\n"
-                + "Nella prima fase ci occuperemo di definire la rete dei trasporti sulla quale\n"
-                + "navigheranno i mezzi; e nella seconda invece ci dedicheremo a tutti i dettagli necessari\n"
-                + "all'avvio della prima simulazione. Una volta terminata questa procedura potrai modificare\n"
-                + "ulteriormente in piena libertà il tuo ambiente di lavoro. Consigliamo di seguire questo\n"
-                + "tutorial se non si è ancora a proprio agio con il programma. Ti ricordiamo inoltre che puoi\n"
-                + "disattivare quando vuoi questa procedura dal menù Opzioni all'avvio dell'applicazione.\n"
-                + "Cominciamo!\n");
-        breathe();
-        //getCh();
+                + "Una volta terminata questa procedura potrai modificare ulteriormente e in piena libertà\n"
+                + "il tuo ambiente di lavoro. Consigliamo di seguire questo tutorial se non si è ancora\n"
+                + "a proprio agio con il programma. Ti ricordiamo inoltre che puoi disattivare quando vuoi\n"
+                + "questa procedura dal menù Opzioni all'avvio dell'applicazione. Premere INVIO per continuare...");
+        this.waitForKeyPressed();
     }
 
     /**
@@ -84,7 +90,7 @@ public class Display {
      */
     private void breathe() {
         try {
-            Thread.sleep(650);
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -99,18 +105,21 @@ public class Display {
         String sure = "N";
         // richiede l'input se l'utente non da l'ok
         while (sure.toUpperCase().equals("N")) {
-            //this.print_Line();
+            breathe();
             System.out.println("Inserire il nome della WorkSpace:");
             Scanner in = new Scanner(System.in);
             nomeWorkSpace = in.nextLine();
+            breathe();
             System.out.println("Il nome inserito è: " + nomeWorkSpace);
             breathe();
             System.out.println("Vuoi procedere? [S/N]");
             sure = in.nextLine();
             while (!sure.toUpperCase().equals("S") && !sure.toUpperCase().equals("N")) {
+                breathe();
                 System.out.println("ERRORE: Input non valido. \n");
                 breathe();
                 System.out.println("Il nome inserito è: " + nomeWorkSpace);
+                breathe();
                 System.out.println("Vuoi procedere? [S/N]");
                 sure = in.nextLine();
             }
@@ -121,14 +130,15 @@ public class Display {
     /**
      * Mostra le opzioni del menù principale.
      */
-    public void print_MenuOptions() {
+    private void print_MenuOptions() {
         this.print_IntroMessage();
         System.out.println(
                 "1 - Crea nuova WorkSpace \n"
                 + "2 - Carica WorkSpace \n"
                 + "3 - Opzioni \n"
-                + "4 - Esci \n"
-                + "Selezionare una voce dal menù: ");
+                + "4 - Esci");
+        breathe();
+        System.out.println("Selezionare una voce dal menù: ");
     }
 
     /**
@@ -160,12 +170,13 @@ public class Display {
         print_Line();
         System.out.println("Passiamo ora a creare la rete dei trasporti, "
                 + "la quale sarà composta da diverse linee che\n"
-                + "noi definiremo ad una ad una. \n");
-        breathe();
+                + "noi definiremo ad una ad una. Premere INVIO per continuare...");
+        this.waitForKeyPressed();
         ArrayList<ArrayList<String>> fermate = new ArrayList<>();
         String nomeLinea;
         String answer = "S";
         while (answer.toUpperCase().equals("S")) {
+            breathe();
             System.out.println("Inserire il nome della linea numero "
                     + (fermate.size() + 1) + ":");
             Scanner in = new Scanner(System.in);
@@ -173,62 +184,55 @@ public class Display {
             ArrayList<String> fermateLinea = new ArrayList<>();
             fermateLinea.add(nomeLinea); //L'indice 0 è riservato al nome della linea.
             String elencoFermate;
+            breathe();
             System.out.println("Inserire in ordine le fermate della linea avendo cura di separarle con un trattino '-'\n"
                     + "(Per esempio: Clodio-Piazzale San Giovanni-Repubblica-Colosseo)");
             elencoFermate = in.nextLine();
             //Manipolazioni sull'elenco delle fermate.
             String[] parts = elencoFermate.split("-");
             fermateLinea.addAll(Arrays.asList(parts));
+            breathe();
             System.out.println("Salvare la linea? [S/N]");
-            answer = in.nextLine();
-            // Check su [S/N].
-            while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
-                System.out.println("ERRORE: Input non valido. \n");
-                breathe();
-                //System.out.println("Il nome inserito è: " + nomeWorkSpace);
-                System.out.println("Salvare la linea? [S/N]");
-                answer = in.nextLine();
-            }
+            answer = getYesOrNoWithCheck("Salvare la linea? [S/N]");
             //Salva la linea se la risposta è S, non salva altrimenti.
             if (answer.toUpperCase().equals("S")) {
                 fermate.add(fermateLinea);
             }
+            breathe();
             System.out.println("Linee salvate: " + fermate.size() + ". Si vuole aggiungere un'altra linea? [S/N]");
-            //System.out.println("Si vuole aggiungere un'altra linea? [S/N]");
-            answer = in.nextLine();
-            // Check su [S/N].
-            while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
-                System.out.println("ERRORE: Input non valido. \n");
-                breathe();
-                //System.out.println("Il nome inserito è: " + nomeWorkSpace);
-                System.out.println("Si vuole aggiungere un'altra linea? [S/N]");
-                answer = in.nextLine();
-            }
+            answer = getYesOrNoWithCheck("Si vuole aggiungere un'altra linea? [S/N]");
         }
         //Creazione del grafo dagli input ottenuti.
+        breathe();
         System.out.println("Creazione del grafo in corso. Attendere...");
-        breathe();
-        breathe();
         workSpace.setFermate(fermate);
-        GraphHolder graphHolder = new GraphHolder();
-        graphHolder.generateGraphFromFermate(fermate);
-        workSpace.setGraphHolder(graphHolder);
+        workSpace.generateGraph();
+        //GraphHolder graphHolder = new GraphHolder();
+        //graphHolder.generateGraphFromFermate(fermate);
+        //workSpace.setGraphHolder(graphHolder);
+        breathe();
+        breathe();
         System.out.println("Creazione del grafo completata. Vuoi visualizzare il grafo? [S/N]");
-        Scanner in = new Scanner(System.in);
-        answer = in.nextLine();
-        // Check su [S/N].
-        while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
-            System.out.println("ERRORE: Input non valido. \n");
-            breathe();
-            //System.out.println("Il nome inserito è: " + nomeWorkSpace);
-            System.out.println("Vuoi visualizzare il grafo? [S/N]");
-            answer = in.nextLine();
-        }
+        answer = getYesOrNoWithCheck("Vuoi visualizzare il grafo? [S/N]");
         if (answer.toUpperCase().equals("S")) {
-            graphHolder.displayGraph();
+            workSpace.displayGraph();
         }
     }
-    
+
+    private String getYesOrNoWithCheck(String question) {
+        Scanner in = new Scanner(System.in);
+        String answer = in.nextLine();
+        // Check su [S/N].
+        while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
+            breathe();
+            System.out.println("ERRORE: Input non valido. \n");
+            breathe();
+            System.out.println(question);
+            answer = in.nextLine();
+        }
+        return answer;
+    }
+
     /**
      * Legge e gestisce tutti gli input dalla console necessari a definire un
      * nuovo elenco di PassengerGenerator per la WorkSpace.
@@ -242,22 +246,24 @@ public class Display {
                 + "più breve che li porti dal loro punto di generazione al punto di arrivo). Si\n"
                 + "possono creare tutti i PassengersGenerator che si desidera per la simulazione.\n"
                 + "E' inutile dire che una simulazione senza nemmeno un PassengerGenerator ha poco\n"
-                + "senso di esistere. Cominciamo infatti a crearne alcuni.\n");
-        breathe();
+                + "senso di esistere. Premere INVIO per continuare...");
+        this.waitForKeyPressed();
         //Creiamo la corrispondenza ID<->fermata necessaria in questa comunicazione utente<->applicazione.
         ArrayList<String> elencoID = new ArrayList<>();
         ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
-        for(int i=0; i<fermate.size(); i++){
-            for(int j=1; j<fermate.get(i).size(); j++){
-                if(!elencoID.contains(fermate.get(i).get(j))){
+        for (int i = 0; i < fermate.size(); i++) {
+            for (int j = 1; j < fermate.get(i).size(); j++) {
+                if (!elencoID.contains(fermate.get(i).get(j))) {
                     elencoID.add(fermate.get(i).get(j));
                 }
             }
         }
         //
-        String answer = "S"; while(answer.toUpperCase().equals("S")) {
+        String answer = "S";
+        while (answer.toUpperCase().equals("S")) {
             int numeroPassengerGenerators = workSpace.getNumberOfPassengerGenerators();
-            System.out.println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + ":" );
+            breathe();
+            System.out.println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + ":");
             breathe();breathe();
             //Otteniamo la fermata di partenza.
             System.out.println("Scegliere la fermata di partenza e di arrivo inserendo l'ID corrispondente tra i seguenti");
@@ -266,25 +272,25 @@ public class Display {
             int frequency = 0;
             this.print_Elencofermate(elencoID);
             breathe();
-            boolean repeat; do{
+            boolean repeat;
+            do {
                 repeat = false;
                 System.out.println("Inserire l'ID della fermata di partenza:");
                 Scanner in = new Scanner(System.in);
                 String idFermataPartenza = in.nextLine();
                 //otteniamo la fermata dall'input, altrimenti ERRORE
-                                try {
+                try {
                     fermataPartenza = elencoID.get(Integer.parseInt(idFermataPartenza));
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     //e.printStackTrace();
                     System.out.println("ERRORE: Input non valido. \n");
                     repeat = true;
                     breathe();
                 }
-            }while(repeat);
+            } while (repeat);
             //Otteniamo la fermata di arrivo.
             breathe();
-            do{
+            do {
                 repeat = false;
                 System.out.println("Inserire l'ID della fermata di arrivo:");
                 Scanner in2 = new Scanner(System.in);
@@ -292,58 +298,33 @@ public class Display {
                 //otteniamo la fermata dall'input, altrimenti ERRORE
                 try {
                     fermataArrivo = elencoID.get(Integer.parseInt(idFermataArrivo));
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     //e.printStackTrace();
                     System.out.println("ERRORE: Input non valido. \n");
                     repeat = true;
                     breathe();
                 }
-            }while(repeat);
+            } while (repeat);
             //Otteniamo la frequency di generazione.
-            do{
+            breathe();
+            do {
                 repeat = false;
                 System.out.println("Inserire quanti viaggiatori generare ogni ora:");
                 Scanner in3 = new Scanner(System.in);
                 try {
                     frequency = in3.nextInt();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     //e.printStackTrace();
                     System.out.println("ERRORE: Input non valido. \n");
                     repeat = true;
                     breathe();
                 }
-            }while(repeat);
+            } while (repeat);
             //Inviamo i dati alla workSpace ed eventualmente ripetiamo.
             workSpace.addNewPassengerGenerator(fermataPartenza, fermataArrivo, frequency);
+            breathe();
             System.out.println("PassengerGenerator creato. Vuoi crearne un altro? [S/N]");
-            Scanner in4 = new Scanner(System.in);
-            answer = in4.nextLine();
-            // Check su [S/N].
-            while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
-                System.out.println("ERRORE: Input non valido. \n");
-                breathe();
-                System.out.println("Vuoi crearne un altro? [S/N]");
-                answer = in4.nextLine();
-            }
-        }
-    }
-
-    /**
-     * Pulisce lo schermo della console in tutti i sistemi operativi.
-     */
-    //NON FUNZIONA
-    private void clearConsole() {
-        try {
-            final String os = System.getProperty("os.name");
-            if (os.contains("Windows")) {
-                Runtime.getRuntime().exec("cls");
-            } else {
-                Runtime.getRuntime().exec("clear");
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
+            answer = getYesOrNoWithCheck("Vuoi crearne un altro? [S/N]");
         }
     }
 
@@ -352,6 +333,7 @@ public class Display {
      */
     private void print_Line() {
         System.out.println("---------------------------");
+        breathe();
     }
 
     /**
@@ -385,47 +367,38 @@ public class Display {
     }
 
     private void print_Elencofermate(ArrayList<String> elencoID) {
-        for(int i=0; i<elencoID.size(); i++){
-            System.out.println(elencoID.get(i) + " -> "+i);
+        for (int i = 0; i < elencoID.size(); i++) {
+            System.out.println(elencoID.get(i) + " -> " + i);
         }
     }
     
-    private String getFermataFromID(String idFermata) {
-        ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
-        String[] parts = idFermata.split("#");
-        return fermate.get(Integer.parseInt(parts[0])).get(Integer.parseInt(parts[1]));
-    }
-    
     /**
-     * Equivalente di getch() di C ma in Java.
+     * Pulisce lo schermo della console in tutti i sistemi operativi.
      */
-    public static void getCh() {  
-        final JFrame frame = new JFrame();  
-        synchronized (frame) {  
-            frame.setUndecorated(true);  
-            frame.getRootPane().setWindowDecorationStyle(JRootPane.FRAME);  
-            frame.addKeyListener(new KeyListener() {
-                @Override 
-                public void keyPressed(KeyEvent e) {  
-                    synchronized (frame) {  
-                        frame.setVisible(false);  
-                        frame.dispose();  
-                        frame.notify();  
-                    }  
-                }  
-                @Override 
-                public void keyReleased(KeyEvent e) {  
-                }  
-                @Override 
-                public void keyTyped(KeyEvent e) {  
-                }  
-            });  
-            frame.setVisible(true);  
-            try {  
-                frame.wait();  
-            } catch (InterruptedException e1) {  
-            }  
-        }  
+    //NON FUNZIONA
+    private void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                Runtime.getRuntime().exec("cls");
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Mette il Display in pausa, in attesa che l'utente prema un tasto.
+     */
+    private void waitForKeyPressed() {
+        try {
+            System.in.read();
+            //breathe();
+        } catch (IOException ex) {
+            Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

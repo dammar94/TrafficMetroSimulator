@@ -16,7 +16,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 
 /**
  * Questa classe ha lo scopo di gestire e riassumere in maniera trasparente
- * tutte le operazioni possibili su un determinato grafo.
+ * tutte le operazioni possibili su un determinato grafo, campo della classe.
  *
  * @author damiano
  */
