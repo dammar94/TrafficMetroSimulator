@@ -233,9 +233,9 @@ public class Display {
      * Legge e gestisce tutti gli input dalla console necessari a definire un
      * nuovo elenco di PassengerGenerator per la WorkSpace.
      */
-    private void read_PassengersGenerators() {
+    private void read_PassengerGenerators() {
         print_Line();
-        System.out.println("Il SimulationEngine utilizza dei PassengersGenerator per simulare\n"
+        System.out.println("Il SimulationEngine utilizza dei PassengerGenerator per simulare\n"
                 + "l'afflusso di viaggiatori nella rete. Ogni PassengerGenerator è costituito\n"
                 + "da: Una fermata di partenza per i viaggiatori, una fermata di arrivo, e una\n"
                 + "frequenza di generazione (automaticamente i viaggiatori sceglieranno il percorso\n"
@@ -243,61 +243,89 @@ public class Display {
                 + "possono creare tutti i PassengersGenerator che si desidera per la simulazione.\n"
                 + "E' inutile dire che una simulazione senza nemmeno un PassengerGenerator ha poco\n"
                 + "senso di esistere. Cominciamo infatti a crearne alcuni.\n");
-        //getCh();
         breathe();
         //Creiamo la corrispondenza ID<->fermata necessaria in questa comunicazione utente<->applicazione.
-        /////DA IMPLEMENTARE!!!
-        String answer = "S";
-        while(answer.toUpperCase().equals("S")) {
+        ArrayList<String> elencoID = new ArrayList<>();
+        ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
+        for(int i=0; i<fermate.size(); i++){
+            for(int j=1; j<fermate.get(i).size(); j++){
+                if(!elencoID.contains(fermate.get(i).get(j))){
+                    elencoID.add(fermate.get(i).get(j));
+                }
+            }
+        }
+        //
+        String answer = "S"; while(answer.toUpperCase().equals("S")) {
             int numeroPassengerGenerators = workSpace.getNumberOfPassengerGenerators();
             System.out.println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + ":" );
-            breathe();
+            breathe();breathe();
             //Otteniamo la fermata di partenza.
-            System.out.println("Scegliere la fermata di partenza inserendo l'ID corrispondente tra i seguenti");
-            breathe();breathe();
-            this.print_Elencofermate();
-            System.out.println("Inserire l'ID:");
-            Scanner in = new Scanner(System.in);
-            String idFermataPartenza = in.nextLine();
-            //otteniamo la fermata dall'input, altrimenti ERRORE
+            System.out.println("Scegliere la fermata di partenza e di arrivo inserendo l'ID corrispondente tra i seguenti");
             String fermataPartenza = null;
-            try {
-                fermataPartenza = this.getFermataFromID(idFermataPartenza);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            //Otteniamo la fermata di arrivo.
-            System.out.println("Scegliere la fermata di arrivo inserendo l'ID corrispondente tra i seguenti");
-            breathe();breathe();
-            this.print_Elencofermate();
-            System.out.println("Inserire l'ID:");
-            Scanner in2 = new Scanner(System.in);
-            String idFermataArrivo = in.nextLine();
-            //otteniamo la fermata dall'input, altrimenti ERRORE
             String fermataArrivo = null;
-            try {
-                fermataArrivo = this.getFermataFromID(idFermataArrivo);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            int frequency = 0;
+            this.print_Elencofermate(elencoID);
+            breathe();
+            boolean repeat; do{
+                repeat = false;
+                System.out.println("Inserire l'ID della fermata di partenza:");
+                Scanner in = new Scanner(System.in);
+                String idFermataPartenza = in.nextLine();
+                //otteniamo la fermata dall'input, altrimenti ERRORE
+                                try {
+                    fermataPartenza = elencoID.get(Integer.parseInt(idFermataPartenza));
+                }
+                catch (Exception e) {
+                    //e.printStackTrace();
+                    System.out.println("ERRORE: Input non valido. \n");
+                    repeat = true;
+                    breathe();
+                }
+            }while(repeat);
+            //Otteniamo la fermata di arrivo.
+            breathe();
+            do{
+                repeat = false;
+                System.out.println("Inserire l'ID della fermata di arrivo:");
+                Scanner in2 = new Scanner(System.in);
+                String idFermataArrivo = in2.nextLine();
+                //otteniamo la fermata dall'input, altrimenti ERRORE
+                try {
+                    fermataArrivo = elencoID.get(Integer.parseInt(idFermataArrivo));
+                }
+                catch (Exception e) {
+                    //e.printStackTrace();
+                    System.out.println("ERRORE: Input non valido. \n");
+                    repeat = true;
+                    breathe();
+                }
+            }while(repeat);
             //Otteniamo la frequency di generazione.
-            System.out.println("Inserire quanti viaggiatori generare ogni ora:");
-            Scanner in3 = new Scanner(System.in);
-            int frequency = in.nextInt();
+            do{
+                repeat = false;
+                System.out.println("Inserire quanti viaggiatori generare ogni ora:");
+                Scanner in3 = new Scanner(System.in);
+                try {
+                    frequency = in3.nextInt();
+                }
+                catch (Exception e) {
+                    //e.printStackTrace();
+                    System.out.println("ERRORE: Input non valido. \n");
+                    repeat = true;
+                    breathe();
+                }
+            }while(repeat);
             //Inviamo i dati alla workSpace ed eventualmente ripetiamo.
             workSpace.addNewPassengerGenerator(fermataPartenza, fermataArrivo, frequency);
             System.out.println("PassengerGenerator creato. Vuoi crearne un altro? [S/N]");
             Scanner in4 = new Scanner(System.in);
-            answer = in.nextLine();
+            answer = in4.nextLine();
             // Check su [S/N].
             while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
                 System.out.println("ERRORE: Input non valido. \n");
                 breathe();
-                //System.out.println("Il nome inserito è: " + nomeWorkSpace);
                 System.out.println("Vuoi crearne un altro? [S/N]");
-                answer = in.nextLine();
+                answer = in4.nextLine();
             }
         }
     }
@@ -306,7 +334,7 @@ public class Display {
      * Pulisce lo schermo della console in tutti i sistemi operativi.
      */
     //NON FUNZIONA
-    private final void clearConsole() {
+    private void clearConsole() {
         try {
             final String os = System.getProperty("os.name");
             if (os.contains("Windows")) {
@@ -322,7 +350,7 @@ public class Display {
     /**
      * Stampa a schermo una lineaa separatrice.
      */
-    private final void print_Line() {
+    private void print_Line() {
         System.out.println("---------------------------");
     }
 
@@ -338,7 +366,7 @@ public class Display {
                 this.print_NuovaWorkSpace_IntroMessage();
                 this.read_NomeWorkSpace();
                 this.read_Graph();
-                this.read_PassengersGenerators();
+                this.read_PassengerGenerators();
                 break;
             case 4:
                 this.print_OutroMessage();
@@ -356,23 +384,12 @@ public class Display {
         }
     }
 
-    private void print_Elencofermate() {
-        ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
-        for(int i=0; i<fermate.size(); i++){
-            for(int j=0; j<fermate.get(i).size(); j++){
-                if(j!=0){
-                    System.out.println(fermate.get(i).get(j) + " -> "+i+"#"+j);
-                }
-            }
+    private void print_Elencofermate(ArrayList<String> elencoID) {
+        for(int i=0; i<elencoID.size(); i++){
+            System.out.println(elencoID.get(i) + " -> "+i);
         }
     }
-
-    /**
-     * Ottiene una stringa col nome della fermata a partire da un ID del tipo
-     * 3#12.
-     * @param idFermata
-     * @return 
-     */
+    
     private String getFermataFromID(String idFermata) {
         ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
         String[] parts = idFermata.split("#");
