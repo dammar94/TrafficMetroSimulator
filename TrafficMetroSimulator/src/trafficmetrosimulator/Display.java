@@ -32,7 +32,7 @@ public class Display {
      * Indica se il display è attivo e pronto ad agire con l'utente.
      */
     public boolean active = false;
-    public WorkSpace workSpace;
+    private WorkSpace workSpace;
 
     /**
      * Costruttore che imposta anche il parametro active del display
@@ -90,7 +90,7 @@ public class Display {
      */
     private void breathe() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(400);
         } catch (InterruptedException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -145,7 +145,7 @@ public class Display {
      * Legge l'opzione del menù scelta dall'utente, e la richiede se l'input non
      * è valido.
      */
-    public void read_MenuOption() {
+    private void read_MenuOption() {
         this.print_MenuOptions();
         Scanner in = new Scanner(System.in);
         String num = in.nextLine();
@@ -163,14 +163,14 @@ public class Display {
     }
 
     /**
-     * Legge e gestisce tutti gli input dalla console necessari a definire un
+     * Legge e gestisce tutti gli input da console necessari a definire un
      * nuovo grafo per la WorkSpace.
      */
     private void read_Graph() {
         print_Line();
         System.out.println("Passiamo ora a creare la rete dei trasporti, "
                 + "la quale sarà composta da diverse linee che\n"
-                + "noi definiremo ad una ad una. Premere INVIO per continuare...");
+                + "definiremo ad una ad una. Premere INVIO per continuare...");
         this.waitForKeyPressed();
         ArrayList<ArrayList<String>> fermate = new ArrayList<>();
         String nomeLinea;
@@ -234,19 +234,19 @@ public class Display {
     }
 
     /**
-     * Legge e gestisce tutti gli input dalla console necessari a definire un
+     * Legge e gestisce tutti gli input daconsole necessari a definire un
      * nuovo elenco di PassengerGenerator per la WorkSpace.
      */
     private void read_PassengerGenerators() {
         print_Line();
         System.out.println("Il SimulationEngine utilizza dei PassengerGenerator per simulare\n"
                 + "l'afflusso di viaggiatori nella rete. Ogni PassengerGenerator è costituito\n"
-                + "da: Una fermata di partenza per i viaggiatori, una fermata di arrivo, e una\n"
+                + "da una fermata di partenza per i viaggiatori, una fermata di arrivo, e una\n"
                 + "frequenza di generazione (automaticamente i viaggiatori sceglieranno il percorso\n"
                 + "più breve che li porti dal loro punto di generazione al punto di arrivo). Si\n"
-                + "possono creare tutti i PassengersGenerator che si desidera per la simulazione.\n"
+                + "possono creare tutti i PassengerGenerator che si desidera per la simulazione.\n"
                 + "E' inutile dire che una simulazione senza nemmeno un PassengerGenerator ha poco\n"
-                + "senso di esistere. Premere INVIO per continuare...");
+                + "senso di esistere. Cominciamo a crearne alcuni. Premere INVIO per continuare...");
         this.waitForKeyPressed();
         //Creiamo la corrispondenza ID<->fermata necessaria in questa comunicazione utente<->applicazione.
         ArrayList<String> elencoID = new ArrayList<>();
@@ -327,6 +327,25 @@ public class Display {
             answer = getYesOrNoWithCheck("Vuoi crearne un altro? [S/N]");
         }
     }
+    
+    /**
+     * Legge e gestisce tutti gli input da console necessari a definire i campi 
+     * cadency e capacity di ogni tipologia di Transport fatto partire durante 
+     * la simulazione.
+     */
+    private void read_TransportParameters() {
+        print_Line();
+        System.out.println("Tieni duro, Abbiamo quasi concluso la procedura guidata, rimane soltanto "
+                + "da definire i parametri necessari al funzionamento dei Transport nella rete, "
+                + "ovvero gli unici veri responsabili dello smaltimento dei viaggiatori. Ogni"
+                + "tipologia di Transport è relativa a una linea e a una direzione, e per ogni"
+                + "tipologia vanno definiti i parametri cadency e capacity, ovvero il ritmo"
+                + "con cui i Transport partono dall'estremo e la capacità massima del mezzo"
+                + "(un Transport non potrà portare più Passenger della sua capacity, inoltre"
+                + "più sono i viaggiatori all'interno del mezzo più questo ne risentirà in"
+                + "termini di performance). Premere INVIO per continuare...");
+        this.waitForKeyPressed();
+    }
 
     /**
      * Stampa a schermo una lineaa separatrice.
@@ -349,6 +368,7 @@ public class Display {
                 this.read_NomeWorkSpace();
                 this.read_Graph();
                 this.read_PassengerGenerators();
+                this.read_TransportParameters();
                 break;
             case 4:
                 this.print_OutroMessage();
@@ -390,8 +410,9 @@ public class Display {
     }
 
     /**
-     * Mette il Display in pausa, in attesa che l'utente prema un tasto.
+     * Mette il Display in pausa, in attesa che l'utente prema INVIO.
      */
+    //Bug: il buffer non viene pulito.
     private void waitForKeyPressed() {
         try {
             System.in.read();
