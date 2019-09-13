@@ -68,21 +68,11 @@ public class Display {
      * Mostra il messaggio introduttivo all'applicazione.
      */
     private void print_NuovaWorkSpace_IntroMessage() {
-        this.print_Line();
-//        System.out.println("Benvenuti nella procedura guidata alla creazione di una nuova Workspace.\n"
-//                + "Nella prima fase ci occuperemo di definire la rete dei trasporti sulla quale\n"
-//                + "navigheranno i mezzi; e nella seconda invece ci dedicheremo a tutti i dettagli necessari\n"
-//                + "all'avvio della prima simulazione. Una volta terminata questa procedura potrai modificare\n"
-//                + "ulteriormente in piena libertà il tuo ambiente di lavoro. Consigliamo di seguire questo\n"
-//                + "tutorial se non si è ancora a proprio agio con il programma. Ti ricordiamo inoltre che puoi\n"
-//                + "disattivare quando vuoi questa procedura dal menù Opzioni all'avvio dell'applicazione.\n"
-//                + "Cominciamo!\n");
-        System.out.println("Benvenuti nella procedura guidata alla creazione di una nuova Workspace.\n"
+        printlnWithLine("Benvenuti nella procedura guidata alla creazione di una nuova Workspace.\n"
                 + "Una volta terminata questa procedura potrai modificare ulteriormente e in piena libertà\n"
                 + "il tuo ambiente di lavoro. Consigliamo di seguire questo tutorial se non si è ancora\n"
                 + "a proprio agio con il programma. Ti ricordiamo inoltre che puoi disattivare quando vuoi\n"
-                + "questa procedura dal menù Opzioni all'avvio dell'applicazione. Premere INVIO per continuare...");
-        this.waitForKeyPressed();
+                + "questa procedura dal menù Opzioni all'avvio dell'applicazione.");
     }
 
     /**
@@ -105,22 +95,16 @@ public class Display {
         String sure = "N";
         // richiede l'input se l'utente non da l'ok
         while (sure.toUpperCase().equals("N")) {
-            breathe();
-            System.out.println("Inserire il nome della WorkSpace:");
+            println("Inserire il nome della WorkSpace:");
             Scanner in = new Scanner(System.in);
             nomeWorkSpace = in.nextLine();
-            breathe();
-            System.out.println("Il nome inserito è: " + nomeWorkSpace);
-            breathe();
-            System.out.println("Vuoi procedere? [S/N]");
+            println("Il nome inserito è: " + nomeWorkSpace);
+            println("Vuoi procedere? [S/N]");
             sure = in.nextLine();
             while (!sure.toUpperCase().equals("S") && !sure.toUpperCase().equals("N")) {
-                breathe();
-                System.out.println("ERRORE: Input non valido. \n");
-                breathe();
-                System.out.println("Il nome inserito è: " + nomeWorkSpace);
-                breathe();
-                System.out.println("Vuoi procedere? [S/N]");
+                println("ERRORE: Input non valido. \n");
+                println("Il nome inserito è: " + nomeWorkSpace);
+                println("Vuoi procedere? [S/N]");
                 sure = in.nextLine();
             }
         }
@@ -167,25 +151,21 @@ public class Display {
      * nuovo grafo per la WorkSpace.
      */
     private void read_Graph() {
-        print_Line();
-        System.out.println("Passiamo ora a creare la rete dei trasporti, "
+        printlnWithLine("Passiamo ora a creare la rete dei trasporti, "
                 + "la quale sarà composta da diverse linee che\n"
                 + "definiremo ad una ad una. Premere INVIO per continuare...");
-        this.waitForKeyPressed();
         ArrayList<ArrayList<String>> fermate = new ArrayList<>();
         String nomeLinea;
         String answer = "S";
         while (answer.toUpperCase().equals("S")) {
-            breathe();
-            System.out.println("Inserire il nome della linea numero "
+            println("Inserire il nome della linea numero "
                     + (fermate.size() + 1) + ":");
             Scanner in = new Scanner(System.in);
             nomeLinea = in.nextLine();
             ArrayList<String> fermateLinea = new ArrayList<>();
             fermateLinea.add(nomeLinea); //L'indice 0 è riservato al nome della linea.
             String elencoFermate;
-            breathe();
-            System.out.println("Inserire in ordine le fermate della linea avendo cura di separarle con un trattino '-'\n"
+            println("Inserire in ordine le fermate della linea avendo cura di separarle con un trattino '-'\n"
                     + "(Per esempio: Clodio-Piazzale San Giovanni-Repubblica-Colosseo)");
             elencoFermate = in.nextLine();
             //Manipolazioni sull'elenco delle fermate.
@@ -224,10 +204,8 @@ public class Display {
         String answer = in.nextLine();
         // Check su [S/N].
         while (!answer.toUpperCase().equals("S") && !answer.toUpperCase().equals("N")) {
-            breathe();
-            System.out.println("ERRORE: Input non valido. \n");
-            breathe();
-            System.out.println(question);
+            println("ERRORE: Input non valido. \n");
+            println(question);
             answer = in.nextLine();
         }
         return answer;
@@ -238,16 +216,14 @@ public class Display {
      * nuovo elenco di PassengerGenerator per la WorkSpace.
      */
     private void read_PassengerGenerators() {
-        print_Line();
-        System.out.println("Il SimulationEngine utilizza dei PassengerGenerator per simulare\n"
+        printlnWithLine("Il SimulationEngine utilizza dei PassengerGenerator per simulare\n"
                 + "l'afflusso di viaggiatori nella rete. Ogni PassengerGenerator è costituito\n"
                 + "da una fermata di partenza per i viaggiatori, una fermata di arrivo, e una\n"
                 + "frequenza di generazione (automaticamente i viaggiatori sceglieranno il percorso\n"
                 + "più breve che li porti dal loro punto di generazione al punto di arrivo). Si\n"
                 + "possono creare tutti i PassengerGenerator che si desidera per la simulazione.\n"
                 + "E' inutile dire che una simulazione senza nemmeno un PassengerGenerator ha poco\n"
-                + "senso di esistere. Cominciamo a crearne alcuni. Premere INVIO per continuare...");
-        this.waitForKeyPressed();
+                + "senso di esistere. Cominciamo a crearne alcuni.");
         //Creiamo la corrispondenza ID<->fermata necessaria in questa comunicazione utente<->applicazione.
         ArrayList<String> elencoID = new ArrayList<>();
         ArrayList<ArrayList<String>> fermate = workSpace.getFermate();
@@ -262,20 +238,17 @@ public class Display {
         String answer = "S";
         while (answer.toUpperCase().equals("S")) {
             int numeroPassengerGenerators = workSpace.getNumberOfPassengerGenerators();
-            breathe();
-            System.out.println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + ":");
-            breathe();breathe();
+            println("Creazione del PassengerGenerator numero " + (numeroPassengerGenerators) + ":");
             //Otteniamo la fermata di partenza.
-            System.out.println("Scegliere la fermata di partenza e di arrivo inserendo l'ID corrispondente tra i seguenti");
+            println("Scegliere la fermata di partenza e di arrivo inserendo l'ID corrispondente tra i seguenti");
             String fermataPartenza = null;
             String fermataArrivo = null;
             int frequency = 0;
             this.print_Elencofermate(elencoID);
-            breathe();
             boolean repeat;
             do {
                 repeat = false;
-                System.out.println("Inserire l'ID della fermata di partenza:");
+                println("Inserire l'ID della fermata di partenza:");
                 Scanner in = new Scanner(System.in);
                 String idFermataPartenza = in.nextLine();
                 //otteniamo la fermata dall'input, altrimenti ERRORE
@@ -283,16 +256,14 @@ public class Display {
                     fermataPartenza = elencoID.get(Integer.parseInt(idFermataPartenza));
                 } catch (Exception e) {
                     //e.printStackTrace();
-                    System.out.println("ERRORE: Input non valido. \n");
+                    println("ERRORE: Input non valido. \n");
                     repeat = true;
-                    breathe();
                 }
             } while (repeat);
             //Otteniamo la fermata di arrivo.
-            breathe();
             do {
                 repeat = false;
-                System.out.println("Inserire l'ID della fermata di arrivo:");
+                println("Inserire l'ID della fermata di arrivo:");
                 Scanner in2 = new Scanner(System.in);
                 String idFermataArrivo = in2.nextLine();
                 //otteniamo la fermata dall'input, altrimenti ERRORE
@@ -300,30 +271,26 @@ public class Display {
                     fermataArrivo = elencoID.get(Integer.parseInt(idFermataArrivo));
                 } catch (Exception e) {
                     //e.printStackTrace();
-                    System.out.println("ERRORE: Input non valido. \n");
+                    println("ERRORE: Input non valido. \n");
                     repeat = true;
-                    breathe();
                 }
             } while (repeat);
             //Otteniamo la frequency di generazione.
-            breathe();
             do {
                 repeat = false;
-                System.out.println("Inserire quanti viaggiatori generare ogni ora:");
+                println("Inserire quanti viaggiatori generare ogni ora:");
                 Scanner in3 = new Scanner(System.in);
                 try {
                     frequency = in3.nextInt();
                 } catch (Exception e) {
                     //e.printStackTrace();
-                    System.out.println("ERRORE: Input non valido. \n");
+                    println("ERRORE: Input non valido. \n");
                     repeat = true;
-                    breathe();
                 }
             } while (repeat);
             //Inviamo i dati alla workSpace ed eventualmente ripetiamo.
             workSpace.addNewPassengerGenerator(fermataPartenza, fermataArrivo, frequency);
-            breathe();
-            System.out.println("PassengerGenerator creato. Vuoi crearne un altro? [S/N]");
+            println("PassengerGenerator creato. Vuoi crearne un altro? [S/N]");
             answer = getYesOrNoWithCheck("Vuoi crearne un altro? [S/N]");
         }
     }
@@ -334,17 +301,62 @@ public class Display {
      * la simulazione.
      */
     private void read_TransportParameters() {
-        print_Line();
-        System.out.println("Tieni duro, Abbiamo quasi concluso la procedura guidata, rimane soltanto "
-                + "da definire i parametri necessari al funzionamento dei Transport nella rete, "
-                + "ovvero gli unici veri responsabili dello smaltimento dei viaggiatori. Ogni"
-                + "tipologia di Transport è relativa a una linea e a una direzione, e per ogni"
-                + "tipologia vanno definiti i parametri cadency e capacity, ovvero il ritmo"
-                + "con cui i Transport partono dall'estremo e la capacità massima del mezzo"
-                + "(un Transport non potrà portare più Passenger della sua capacity, inoltre"
-                + "più sono i viaggiatori all'interno del mezzo più questo ne risentirà in"
-                + "termini di performance). Premere INVIO per continuare...");
-        this.waitForKeyPressed();
+        printlnWithLine("Tieni duro, Abbiamo quasi fatto, rimane soltanto una cosa da fare:\n"
+                + "definire i parametri necessari al funzionamento dei Transport nella rete,\n"
+                + "ovvero gli unici veri responsabili dello smaltimento dei viaggiatori. Ogni\n"
+                + "tipologia di Transport è relativa a una linea e a una direzione, e per ogni\n"
+                + "tipologia vanno definiti i parametri cadency e capacity, ovvero il ritmo\n"
+                + "con cui i Transport partono dall'estremo e la capacità massima del mezzo\n"
+                + "(un Transport non potrà portare più Passenger della sua capacity, inoltre\n"
+                + "più sono i viaggiatori all'interno del mezzo più questo ne risentirà in\n"
+                + "termini di performance). Iniziamo a definire questi parametri.");
+        ArrayList<ArrayList<String>> linee = workSpace.getFermate();
+        //Per ogni linea prendiamo in input i parametri necessari due volte, una per ogni direzione.
+        for(int i=0; i<linee.size(); i++){
+            ArrayList<String> fermateLinea = linee.get(i); 
+            //Prima direzione
+            println("Definizione parametri linea '" + fermateLinea.get(0) + "' direzione '" + fermateLinea.get(1) + "'");
+            println("Inserire ogni quanti minuti far partire i Transport:");
+            Scanner in = new Scanner(System.in);
+            int cadency = in.nextInt();
+            println("Inserire la capacità massima dei Transport:");
+            Scanner in2 = new Scanner(System.in);
+            int capacity = in2.nextInt();
+            //Passiamo i dati alla WorkSpace
+            workSpace.addNewTransportStencil(fermateLinea.get(0), fermateLinea.get(1), cadency, capacity);
+            //Seconda direzione
+            int size = fermateLinea.size();
+            println("Definizione parametri linea '" + fermateLinea.get(0) + "' direzione '" + fermateLinea.get(size-1) + "'");
+            println("Inserire ogni quanti minuti far partire i Transport:");
+            in = new Scanner(System.in);
+            cadency = in.nextInt();
+            println("Inserire la capacità massima dei Transport:");
+            in2 = new Scanner(System.in);
+            capacity = in2.nextInt();
+            //Passiamo i dati alla WorkSpace
+            workSpace.addNewTransportStencil(fermateLinea.get(0), fermateLinea.get(size-1), cadency, capacity);
+        }
+    }
+    
+    private void print_ProcedureComplete() {
+        println("Completamento della WorkSpace in corso...");
+        breathe();
+        printlnWithLine("Complimenti, hai portato a termine la procedura guidata. Verrai ora reinderizzato al\n"
+                + "pannello di controllo della WorkSpace dove potrai modificare i parametri da\n"
+                + "te inseriti e anche altri che non hai ancora incontrato, ma che\n"
+                + "può essere interessante tenere sotto controllo. Puoi già da adesso far\n"
+                + "girare la tua prima simulazione di traffico senza problemi selezionando l'apposita\n"
+                + "voce dal menu successivo. Buon divertimento!");
+    }
+
+    /**
+     * Scorciatoia per il metodo System.out.println() con annessa una piccola pausa
+     * prima della stampa a video.
+     * @param string 
+     */
+    private void println(String string) {
+        breathe();
+        System.out.println(string);
     }
 
     /**
@@ -354,22 +366,40 @@ public class Display {
         System.out.println("---------------------------");
         breathe();
     }
+    
+    /**
+     * Versione più elaborata del metodo println() con una linea prima separatrice
+     * dal discorso precedente e un waitForKeyPressed() a concludere.
+     * @param string 
+     */
+    private void printlnWithLine(String string) {
+        System.out.println("---------------------------");
+        breathe();
+        System.out.println(string);
+        System.out.println("Premere INVIO per continuare...");
+        this.waitForKeyPressed();
+    }
 
     /**
      * Impone al Display di agire in base al suo displayStatus corrente.
      */
     public void act() {
         switch (displayStatus) {
+            //Menù iniziale.
             case 0:
                 this.read_MenuOption();
                 break;
+            //Nuova WorkSpace.
             case 1:
+                //Procedura guidata alla creazione di una nuova WorkSpace.
                 this.print_NuovaWorkSpace_IntroMessage();
                 this.read_NomeWorkSpace();
                 this.read_Graph();
                 this.read_PassengerGenerators();
                 this.read_TransportParameters();
+                this.print_ProcedureComplete();
                 break;
+            //Esci.
             case 4:
                 this.print_OutroMessage();
                 this.active = false;

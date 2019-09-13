@@ -26,14 +26,15 @@ public class WorkSpace {
      * Lista dei PassengerGenerator disponibili per la simulazione.
      */
     private final ArrayList<PassengerGenerator> listaPassengerGenerators;
-    
     /**
      * GraphHolder della WorkSpace.
      */
     private GraphHolder graphHolder;
-
+    /**
+     * Lista dei TransportStencil relativi alla WorkSpace.
+     */
+    private final ArrayList<TransportStencil> listaTransportStencils;
     
-
     public void setFermate(ArrayList<ArrayList<String>> fermate) {
         this.fermate = fermate;
     }
@@ -51,6 +52,7 @@ public class WorkSpace {
         this.nomeWorkSpace = nomeWorkSpace;
         this.fermate = new ArrayList<>();
         this.listaPassengerGenerators = new ArrayList<>();
+        this.listaTransportStencils = new ArrayList<>();
     }
 
     /**
@@ -79,6 +81,11 @@ public class WorkSpace {
 
     void displayGraph() {
         graphHolder.displayGraph();
+    }
+
+    void addNewTransportStencil(String linea, String direzione, int cadency, int capacity) {
+        TransportStencil ts = new TransportStencil(linea, direzione, cadency, capacity);
+        this.listaTransportStencils.add(ts);
     }
 
 }
