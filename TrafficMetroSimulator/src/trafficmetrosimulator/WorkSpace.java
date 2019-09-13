@@ -16,7 +16,7 @@ import org.graphstream.graph.Node;
  */
 public class WorkSpace {
 
-    private String nomeWorkSpace;
+    private final String nomeWorkSpace;
     /**
      * Elenco delle linee dei trasporti, rappresentate a loro volta da un elenco
      * di stringhe (L'indice x-0 è riservato al nome della linea).
@@ -35,14 +35,6 @@ public class WorkSpace {
      */
     private final ArrayList<TransportStencil> listaTransportStencils;
     
-    public void setFermate(ArrayList<ArrayList<String>> fermate) {
-        this.fermate = fermate;
-    }
-    
-    public ArrayList<ArrayList<String>> getFermate() {
-        return fermate;
-    }
-
     /**
      * Imposta il nome della WorkSpace alla creazione.
      *
@@ -53,6 +45,18 @@ public class WorkSpace {
         this.fermate = new ArrayList<>();
         this.listaPassengerGenerators = new ArrayList<>();
         this.listaTransportStencils = new ArrayList<>();
+    }
+    
+    public String getNomeWorkSpace() {
+        return nomeWorkSpace;
+    }
+    
+    public void setFermate(ArrayList<ArrayList<String>> fermate) {
+        this.fermate = fermate;
+    }
+    
+    public ArrayList<ArrayList<String>> getFermate() {
+        return fermate;
     }
 
     /**
@@ -86,6 +90,14 @@ public class WorkSpace {
     void addNewTransportStencil(String linea, String direzione, int cadency, int capacity) {
         TransportStencil ts = new TransportStencil(linea, direzione, cadency, capacity);
         this.listaTransportStencils.add(ts);
+    }
+
+    String getDataCreazione() {
+        return "TODO";
+    }
+
+    String getDataUltimoSalvataggio() {
+        return "TODO";
     }
 
 }

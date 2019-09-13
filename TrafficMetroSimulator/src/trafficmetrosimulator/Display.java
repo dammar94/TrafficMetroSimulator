@@ -340,13 +340,16 @@ public class Display {
     
     private void print_ProcedureComplete() {
         println("Completamento della WorkSpace in corso...");
-        breathe();
-        printlnWithLine("Complimenti, hai portato a termine la procedura guidata. Verrai ora reinderizzato al\n"
+        breathe();breathe();breathe();
+        System.out.println("Complimenti, hai portato a termine la procedura guidata. Verrai ora reinderizzato al\n"
                 + "pannello di controllo della WorkSpace dove potrai modificare i parametri da\n"
-                + "te inseriti e anche altri che non hai ancora incontrato, ma che\n"
+                + "te inseriti e anche altri che non hai ancora visto, ma che\n"
                 + "può essere interessante tenere sotto controllo. Puoi già da adesso far\n"
                 + "girare la tua prima simulazione di traffico senza problemi selezionando l'apposita\n"
                 + "voce dal menu successivo. Buon divertimento!");
+        breathe();
+        System.out.println("Premere INVIO per continuare...");
+        this.waitForKeyPressed();
     }
 
     /**
@@ -398,6 +401,8 @@ public class Display {
                 this.read_PassengerGenerators();
                 this.read_TransportParameters();
                 this.print_ProcedureComplete();
+                //Panello di controllo WorkSpace
+                this.read_WorkSpaceMenuOption();
                 break;
             //Esci.
             case 4:
@@ -450,6 +455,38 @@ public class Display {
         } catch (IOException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * Legge l'opzione del pannello di controllo della WorkSpace scelta dall'utente.
+     */
+    private void read_WorkSpaceMenuOption() {
+        println("Nome WorkSpace: " + workSpace.getNomeWorkSpace() + " | Data Creazione: " + 
+                workSpace.getDataCreazione() + " | Ultimo Salvataggio: " + 
+                workSpace.getDataUltimoSalvataggio());
+        System.out.println(
+                "1 - Avvia SimulationEngine\n"
+                + "2 - Graph\n"
+                + "3 - Transports\n"
+                + "4 - PassengerGenerators\n"
+                + "5 - Preferenze di Simulazione\n"
+                + "6 - Salva WorkSpace\n"
+                + "7 - Esci");
+        breathe();
+        System.out.println("Selezionare una voce dal menù: ");
+        Scanner in = new Scanner(System.in);
+        String num = in.nextLine();
+        // richiede l'input se non è valido
+        while (!num.equals("1") && !num.equals("2") && !num.equals("3")
+                && !num.equals("4")) {
+            this.clearConsole(); //NON FUNZIONA
+            System.out.println("ERRORE: selezionare una voce del menù valida.\n");
+            breathe();
+            this.print_MenuOptions();
+            num = in.nextLine();
+        }
+        // imposta il nuovo displayStatus
+        this.displayStatus = Integer.parseInt(num);
     }
 
 }
