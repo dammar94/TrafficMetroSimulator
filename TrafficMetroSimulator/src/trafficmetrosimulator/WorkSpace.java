@@ -112,12 +112,19 @@ public class WorkSpace implements Serializable {
      * @throws IOException 
      */
     void saveInHardDrive() throws FileNotFoundException, IOException {
-        FileOutputStream f = new FileOutputStream(new File(this.nomeWorkSpace + ".wrsp"));
-        ObjectOutputStream o = new ObjectOutputStream(f);
-        // Write objects to file
-        o.writeObject(this);
-        o.close();
-        f.close();
+        try {
+            FileOutputStream f = new FileOutputStream(new File(this.nomeWorkSpace + ".wrsp"));
+            ObjectOutputStream o = new ObjectOutputStream(f);
+            o.writeObject(this);
+            o.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
     
 }

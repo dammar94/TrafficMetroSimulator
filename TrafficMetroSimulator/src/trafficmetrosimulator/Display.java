@@ -22,7 +22,7 @@ import javax.swing.JRootPane;
 
 /**
  * Questa classe è responsabile di tutte le iterazioni di input e output tramite
- * terminal tra l'utente è l'applicazione
+ * console tra l'utente è l'applicazione
  *
  * @author damiano
  */
@@ -509,12 +509,12 @@ public class Display {
         println("Salvataggio WorkSpace in corso...");
         try {
             workSpace.saveInHardDrive();
+            println("WorkSpace salvata.");
         } catch (FileNotFoundException e) {
             System.out.println("ERRORE: File non trovato.\n");
         } catch (IOException e) {
             System.out.println("ERRORE: Stream non inizializzato.\n");
         }
-        println("WorkSpace salvata.");
         //Torniamo al pannello di controllo
         this.displayStatus = 10;
     }
@@ -525,24 +525,34 @@ public class Display {
      * da una lista.
      */
     private void read_CaricaWorkSpace() {
-        File [] files = WorkSpaceLoader.getListFiles();
+        String [] filesNames = WorkSpaceLoader.getListFilesNames();
         println("Elenco WorkSpace salvate:");
-        for (int i=0; i<files.length; i++) {
-            System.out.println(i + " - " + files[i]);
+        if (filesNames.length == 0) {
+            println("Non sono state ancora salvate WorkSpace. \n");
+            this.displayStatus = 0;
+            breathe();breathe();breathe();
+            return;
+        }
+        for (int i=0; i<filesNames.length; i++) {
+            System.out.println(i + " - " + filesNames[i]);
         }
         println("Selezionare una WorkSpace: ");
         Scanner in = new Scanner(System.in);
         int choice = in.nextInt();
+        //Comunica al WorkSpaceLoader l'indice del File da caricare.
+        WorkSpaceLoader.fileToLoadIndex = choice; 
+        //Carica il File.
         try {
-            this.workSpace = WorkSpaceLoader.loadWorkSpaceFromFile(files[choice]);
+            this.workSpace = WorkSpaceLoader.loadWorkSpaceFromFile();
+            println("WorkSpace caricata.");
         } catch (FileNotFoundException e) {
             System.out.println("ERRORE: File non trovato.\n");
         } catch (IOException e) {
             System.out.println("ERRORE: Stream non inizializzato.\n");
         } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

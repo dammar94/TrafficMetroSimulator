@@ -5,6 +5,7 @@
  */
 package trafficmetrosimulator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import org.graphstream.graph.Edge;
@@ -20,7 +21,7 @@ import org.graphstream.graph.implementations.SingleGraph;
  *
  * @author damiano
  */
-public class GraphHolder {
+public class GraphHolder implements Serializable {
 
     /**
      * Questo è il grafo contenuto nell'holder, oggetto di tutte le operazioni.
