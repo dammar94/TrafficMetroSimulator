@@ -5,28 +5,19 @@
  */
 package trafficmetrosimulator;
 
-import org.graphstream.graph.Node;
-
-/** Questa classe è di vitale importanza per la simulazione; Gestiste
- * l'affluenza dei passeggeri nella rete secondo tre parametri: startNode, 
- * arrivalNode e frequency (ovvero, il nodo di partenza, quello d'arrivo e la
- * frequenza oraria con cui vengono generati i viaggiatori).
+/**
  *
  * @author damiano
  */
-public class PassengerGenerator {
-    
-    /**
-     * I nodi di partenza e arrivo dei passeggeri
-     */
-    Node startNode;
-    Node arrivalNode;
-    int frequency;
-    
-    public PassengerGenerator(Node startNode, Node arrivalNode, int frequency) {
-        this.startNode = startNode;
-        this.arrivalNode = arrivalNode;
-        this.frequency = frequency;
+class PassengerGenerator {
+    private final PassengerStencil passengerStencil;
+
+    public PassengerGenerator(PassengerStencil passengerStencil) {
+        this.passengerStencil = passengerStencil;
+    }
+
+    public void update() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

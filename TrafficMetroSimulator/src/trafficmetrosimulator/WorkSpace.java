@@ -21,7 +21,6 @@ import org.graphstream.graph.Node;
  * @author damiano
  */
 public class WorkSpace implements Serializable {
-
     private final String nomeWorkSpace;
     /**
      * Elenco delle linee dei trasporti, rappresentate a loro volta da un elenco
@@ -29,17 +28,18 @@ public class WorkSpace implements Serializable {
      */
     private ArrayList<ArrayList<String>> fermate;
     /**
-     * Lista dei PassengerGenerator disponibili per la simulazione.
+     * Lista dei PassengerStencil disponibili per la simulazione.
      */
-    private final ArrayList<PassengerGenerator> listaPassengerGenerators;
+    private final ArrayList<PassengerStencil> listaPassengerStencils;
     /**
      * GraphHolder della WorkSpace.
      */
-    private GraphHolder graphHolder;
+    private transient GraphHolder graphHolder; // Non serializza il GraphHolder. TOFIX!
     /**
      * Lista dei TransportStencil relativi alla WorkSpace.
      */
     private final ArrayList<TransportStencil> listaTransportStencils;
+    private transient SimulationEngine simulationEngine;
     
     /**
      * Imposta il nome della WorkSpace alla creazione.
@@ -49,7 +49,7 @@ public class WorkSpace implements Serializable {
     public WorkSpace(String nomeWorkSpace) {
         this.nomeWorkSpace = nomeWorkSpace;
         this.fermate = new ArrayList<>();
-        this.listaPassengerGenerators = new ArrayList<>();
+        this.listaPassengerStencils = new ArrayList<>();
         this.listaTransportStencils = new ArrayList<>();
     }
     
@@ -66,25 +66,25 @@ public class WorkSpace implements Serializable {
     }
 
     /**
-     * Crea e aggiunge alla propria lista un nuovo PassengerGenerator partendo dai
+     * Crea e aggiunge alla propria lista un nuovo PassengerStencil partendo dai
      * paramentri in input.
      * @param fermataPartenza
      * @param fermataArrivo
      * @param frequency 
      */
     void addNewPassengerGenerator(String fermataPartenza, String fermataArrivo, int frequency) {
-        Node startNode = graphHolder.getNodeByName(fermataPartenza);
-        Node arrivalNode = graphHolder.getNodeByName(fermataArrivo);
-        PassengerGenerator passengerGenerator = new PassengerGenerator(startNode, arrivalNode, frequency);
-        this.listaPassengerGenerators.add(passengerGenerator);
+//        Node startNode = graphHolder.getNodeByName(fermataPartenza);
+//        Node arrivalNode = graphHolder.getNodeByName(fermataArrivo);
+        PassengerStencil passengerGenerator = new PassengerStencil(fermataPartenza, fermataArrivo, frequency);
+        this.listaPassengerStencils.add(passengerGenerator);
     }
 
     int getNumberOfPassengerGenerators() {
-        return (this.listaPassengerGenerators.size() + 1);
+        return (this.listaPassengerStencils.size() + 1);
     }
 
     void generateGraph() {
-        GraphHolder graphHolder = new GraphHolder();
+        GraphHolder graphHolder = new GraphHolder(this.fermate);
         graphHolder.generateGraphFromFermate(fermate);
         this.graphHolder = graphHolder;
     }
@@ -126,5 +126,14 @@ public class WorkSpace implements Serializable {
             throw e;
         }
     }
+    
+    void startSimulationEngine() {
+        this.simulationEngine = new SimulationEngine(this.listaPassengerStencils, 
+                this.listaTransportStencils, this.graphHolder);
+        this.simulationEngine.initialise();
+        this.simulationEngine.start();
+    }
+    
+    
     
 }

@@ -21,12 +21,16 @@ import org.graphstream.graph.implementations.SingleGraph;
  *
  * @author damiano
  */
-public class GraphHolder implements Serializable {
-
+public class GraphHolder {
+    private ArrayList<ArrayList<String>> fermate;
     /**
      * Questo è il grafo contenuto nell'holder, oggetto di tutte le operazioni.
      */
     Graph graph;
+    
+    public GraphHolder(ArrayList<ArrayList<String>> fermate) {
+        this.fermate = fermate;
+    }
 
     /**
      * Genera il grafo a partire dall'array delle fermate.
@@ -40,7 +44,7 @@ public class GraphHolder implements Serializable {
             Node nodoPrecedente = null;
             Node nodoCorrente = null;
             for (int j = 1; j < fermate.get(i).size(); j++) { //j=0 è il nome della linea
-                //Se il nodo non esiste lo crea, altrimenti riprende quello già creato.
+                //Se il edge non esiste lo crea, altrimenti riprende quello già creato.
                 try {
                     nodoCorrente = graph.addNode("" + fermate.get(i).get(j));
                     nodoCorrente.addAttribute("ui.label", fermate.get(i).get(j)); //Manipolazione sullo stile provvisoria. Verrà creato uno StyleSheet apposito.
@@ -87,7 +91,65 @@ public class GraphHolder implements Serializable {
         this.graph.display();
     }
 
-    Node getNodeByName(String stringa) {
-        return graph.getNode(stringa);
+    Node getNodeByName(String name) {
+        return graph.getNode(name);
+    }
+    
+    Edge getEdgeByName(String name) {
+        return graph.getEdge(name);
+    }
+
+    ArrayList<Node> getLineaListaNodes(String linea, String direzione) {
+        ArrayList<Node> listaNodes = new ArrayList<>();
+        for(int i=0; i<fermate.size(); i++) {
+            if(linea.equals(fermate.get(i).get(0))) { //La linea è quella giusta.
+                ArrayList<String> l = fermate.get(i);
+                if(direzione.equals(l.get(0))) { //La direzione è quella giusta.
+                    for(int j=l.size(); j>0; j--){
+                        Node nodo = this.getNodeByName(l.get(j));
+                        listaNodes.add(nodo);
+                    }
+                } else{ //Altrimenti l'altra.
+                    for(int j=1; j<l.size(); j++){
+                        Node nodo = this.getNodeByName(l.get(j));
+                        listaNodes.add(nodo);
+                    }
+                }
+            }
+        }
+        return listaNodes;
+    }
+
+    ArrayList<Edge> getLineaListaEdges(String linea, String direzione) {
+        ArrayList<Edge> listaEdges = new ArrayList<>();
+        for(int i=0; i<fermate.size(); i++) {
+            if(linea.equals(fermate.get(i).get(0))) { //La linea è quella giusta.
+                ArrayList<String> l = fermate.get(i);
+                if(direzione.equals(l.get(0))) { //La direzione è quella giusta.
+                    for(int j=l.size(); j>1; j--){
+                        Edge edge = this.getEdgeByNodeNames(l.get(j), l.get(j-1));
+                        listaEdges.add(edge);
+                    }
+                } else{ //Altrimenti l'altra.
+                    for(int j=1; j<l.size()-1; j++){
+                        Edge edge = this.getEdgeByNodeNames(l.get(j), l.get(j+1));
+                        listaEdges.add(edge);
+                    }
+                }
+            }
+        }
+        return listaEdges;
+    }
+
+    private Edge getEdgeByNodeNames(String nodo1, String nodo2) {
+        try{
+            return this.graph.getEdge(nodo1 + "-" + nodo2);
+        } catch (IdAlreadyInUseException exc) {
+            return this.graph.getEdge(nodo2 + "-" + nodo1);
+        } catch (EdgeRejectedException exc) {
+            return this.graph.getEdge(nodo2 + "-" + nodo1);
+        } finally {
+
+        }
     }
 }

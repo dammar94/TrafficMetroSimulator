@@ -22,6 +22,11 @@ public class TrafficMetroSimulator {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Display display = new Display(true);
+        //display.print_IntroMessage();
+        while (display.active) {
+            display.act();
+        }
     }
 
 }

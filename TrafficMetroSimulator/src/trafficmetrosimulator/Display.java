@@ -27,7 +27,6 @@ import javax.swing.JRootPane;
  * @author damiano
  */
 public class Display {
-
     /**
      * Descrive lo stato corrente del dialogo fra l'utente e l'applicazione.
      */
@@ -84,7 +83,7 @@ public class Display {
      */
     private void breathe() {
         try {
-            Thread.sleep(400);
+            Thread.sleep(200);
         } catch (InterruptedException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -419,6 +418,10 @@ public class Display {
             case 10:
                 this.read_WorkSpaceMenuOption();
                 break;
+            //Avvia SimulationEngine
+            case 11:
+                this.print_StartSimulationEngine();
+                break;
             //Salva WorkSpace
             case 16:
                 this.print_SalvaWorkSpace();
@@ -437,7 +440,7 @@ public class Display {
 
     private void print_Elencofermate(ArrayList<String> elencoID) {
         for (int i = 0; i < elencoID.size(); i++) {
-            System.out.println(elencoID.get(i) + " -> " + i);
+            System.out.println(i + " -> " + elencoID.get(i));
         }
     }
     
@@ -476,7 +479,7 @@ public class Display {
      * Legge l'opzione del pannello di controllo della WorkSpace scelta dall'utente.
      */
     private void read_WorkSpaceMenuOption() {
-        println("Nome WorkSpace: " + workSpace.getNomeWorkSpace() + " | Data Creazione: " + 
+        println("WorkSpace: " + workSpace.getNomeWorkSpace() + " | Data Creazione: " + 
                 workSpace.getDataCreazione() + " | Ultimo Salvataggio: " + 
                 workSpace.getDataUltimoSalvataggio());
         System.out.println(
@@ -509,7 +512,7 @@ public class Display {
         println("Salvataggio WorkSpace in corso...");
         try {
             workSpace.saveInHardDrive();
-            println("WorkSpace salvata.");
+            println("WorkSpace salvata.\n");
         } catch (FileNotFoundException e) {
             System.out.println("ERRORE: File non trovato.\n");
         } catch (IOException e) {
@@ -544,7 +547,7 @@ public class Display {
         //Carica il File.
         try {
             this.workSpace = WorkSpaceLoader.loadWorkSpaceFromFile();
-            println("WorkSpace caricata.");
+            println("WorkSpace caricata.\n");
         } catch (FileNotFoundException e) {
             System.out.println("ERRORE: File non trovato.\n");
         } catch (IOException e) {
@@ -553,6 +556,13 @@ public class Display {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        this.displayStatus = 10; // Vai al pannello di controllo.
+    }
+
+    private void print_StartSimulationEngine() {
+        println("Avvio SimulationEngine in corso...");
+        workSpace.startSimulationEngine();
+        println("Simulazione completata.");
     }
 
 }

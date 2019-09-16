@@ -5,16 +5,18 @@
  */
 package trafficmetrosimulator;
 
+import java.io.Serializable;
+
 /** 
  * Questa classe funge da stampino per i Transport relativi a una WorkSpace
  * @author damiano
  */
-public class TransportStencil {
+public class TransportStencil implements Serializable {
     
-    private String linea;
-    private String direzione;
-    private int cadency;
-    private int capacity;
+    String linea;
+    String direzione;
+    int cadency;
+    int capacity;
 
     public TransportStencil(String linea, String direzione, int cadency, int capacity) {
         this.linea = linea;
