@@ -474,7 +474,6 @@ public class Display {
         }
     }
     
-    //STAVI IMPLEMENTANDO QUESTO
     /**
      * Legge l'opzione del pannello di controllo della WorkSpace scelta dall'utente.
      */

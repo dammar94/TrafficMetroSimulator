@@ -9,7 +9,7 @@ package trafficmetrosimulator;
  *
  * @author damiano
  */
-class PassengerGenerator {
+class PassengerGenerator extends Thread {
     private final PassengerStencil passengerStencil;
 
     public PassengerGenerator(PassengerStencil passengerStencil) {

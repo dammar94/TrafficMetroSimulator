@@ -43,6 +43,14 @@ class SimulationEngine {
         long updateTime;
         long wait;
         final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+        // Fai partire i TransportGenerator
+        for(int i=0; i<this.listaTransportGenerator.size(); i++) {
+            TransportGenerator tg = listaTransportGenerator.get(i);
+            tg.setCurrentTime(currentTime);
+            tg.start();
+        }
+        // Fai partire i PassengerGenerator
+        // TODO
         while (isRunning) {
             now = System.nanoTime();
             update();
@@ -60,8 +68,10 @@ class SimulationEngine {
     private void update() {
         this.currentTime = (this.currentTime+1) % 2400;
         // Aggiorna i TransportGenerator
-        // TODO
-        // Aggiorna i PassengerGenerator
+        for (TransportGenerator tg : this.listaTransportGenerator) {
+            tg.setCurrentTime(currentTime);
+            tg.notify();
+        } // Aggiorna i PassengerGenerator
         // TODO
     }
 

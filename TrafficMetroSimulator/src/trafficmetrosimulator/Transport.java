@@ -13,12 +13,13 @@ import org.graphstream.graph.Node;
  *
  * @author damiano
  */
-public class Transport implements Runnable {
+public class Transport extends Thread {
     private ArrayList<Node> tragittoNodi;
     private ArrayList<Edge> tragittoEdge;
     private boolean onEdge = false;
     private final int capacity;
     private int currentLoad = 0;
+    private boolean running = false;
 
     public Transport(ArrayList<Node> tragittoNodi, ArrayList<Edge> tragittoEdge, int capacity) {
         this.tragittoNodi = tragittoNodi;
@@ -28,7 +29,10 @@ public class Transport implements Runnable {
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        running = true;
+        while(running) {
+            // TODO
+        }
     }
     
 }
