@@ -7,7 +7,11 @@ package trafficmetrosimulator;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -153,7 +157,7 @@ public class Display {
     private void read_Graph() {
         printlnWithLine("Passiamo ora a creare la rete dei trasporti, "
                 + "la quale sarà composta da diverse linee che\n"
-                + "definiremo ad una ad una. Premere INVIO per continuare...");
+                + "definiremo ad una ad una.");
         ArrayList<ArrayList<String>> fermate = new ArrayList<>();
         String nomeLinea;
         String answer = "S";
@@ -312,7 +316,7 @@ public class Display {
                 + "termini di performance). Iniziamo a definire questi parametri.");
         ArrayList<ArrayList<String>> linee = workSpace.getFermate();
         //Per ogni linea prendiamo in input i parametri necessari due volte, una per ogni direzione.
-        for(int i=0; i<linee.size(); i++){
+        for(int i=0; i<linee.size(); i++){ //INVALID INPUT BUG.
             ArrayList<String> fermateLinea = linee.get(i); 
             //Prima direzione
             println("Definizione parametri linea '" + fermateLinea.get(0) + "' direzione '" + fermateLinea.get(1) + "'");
@@ -340,6 +344,7 @@ public class Display {
     
     private void print_ProcedureComplete() {
         println("Completamento della WorkSpace in corso...");
+        this.displayStatus = 10; //Spostiamoci nel pannello di controllo della WorkSpace.
         breathe();breathe();breathe();
         System.out.println("Complimenti, hai portato a termine la procedura guidata. Verrai ora reinderizzato al\n"
                 + "pannello di controllo della WorkSpace dove potrai modificare i parametri da\n"
@@ -376,8 +381,7 @@ public class Display {
      * @param string 
      */
     private void printlnWithLine(String string) {
-        System.out.println("---------------------------");
-        breathe();
+        print_Line();
         System.out.println(string);
         System.out.println("Premere INVIO per continuare...");
         this.waitForKeyPressed();
@@ -401,13 +405,23 @@ public class Display {
                 this.read_PassengerGenerators();
                 this.read_TransportParameters();
                 this.print_ProcedureComplete();
-                //Panello di controllo WorkSpace
-                this.read_WorkSpaceMenuOption();
+                break;
+            //Carica WorkSpace.
+            case 2:
+                this.read_CaricaWorkSpace();
                 break;
             //Esci.
             case 4:
                 this.print_OutroMessage();
                 this.active = false;
+                break;
+            //Pannello di controllo WorkSpace
+            case 10:
+                this.read_WorkSpaceMenuOption();
+                break;
+            //Salva WorkSpace
+            case 16:
+                this.print_SalvaWorkSpace();
                 break;
         }
 
@@ -457,6 +471,7 @@ public class Display {
         }
     }
     
+    //STAVI IMPLEMENTANDO QUESTO
     /**
      * Legge l'opzione del pannello di controllo della WorkSpace scelta dall'utente.
      */
@@ -478,15 +493,56 @@ public class Display {
         String num = in.nextLine();
         // richiede l'input se non è valido
         while (!num.equals("1") && !num.equals("2") && !num.equals("3")
-                && !num.equals("4")) {
+                && !num.equals("4") && !num.equals("5") && !num.equals("6")
+                && !num.equals("7")) {
             this.clearConsole(); //NON FUNZIONA
-            System.out.println("ERRORE: selezionare una voce del menù valida.\n");
+            System.out.println("ERRORE: Selezionare una voce del menù valida.\n");
             breathe();
             this.print_MenuOptions();
             num = in.nextLine();
         }
         // imposta il nuovo displayStatus
-        this.displayStatus = Integer.parseInt(num);
+        this.displayStatus = Integer.parseInt(num) + 10;
+    }
+
+    private void print_SalvaWorkSpace() {
+        println("Salvataggio WorkSpace in corso...");
+        try {
+            workSpace.saveInHardDrive();
+        } catch (FileNotFoundException e) {
+            System.out.println("ERRORE: File non trovato.\n");
+        } catch (IOException e) {
+            System.out.println("ERRORE: Stream non inizializzato.\n");
+        }
+        println("WorkSpace salvata.");
+        //Torniamo al pannello di controllo
+        this.displayStatus = 10;
+    }
+
+    /**
+     * Coordina tutte le operazioni di input e output su console per caricare 
+     * una WorkSpace scelta dall'utente precedentemente salvata selezionandola 
+     * da una lista.
+     */
+    private void read_CaricaWorkSpace() {
+        File [] files = WorkSpaceLoader.getListFiles();
+        println("Elenco WorkSpace salvate:");
+        for (int i=0; i<files.length; i++) {
+            System.out.println(i + " - " + files[i]);
+        }
+        println("Selezionare una WorkSpace: ");
+        Scanner in = new Scanner(System.in);
+        int choice = in.nextInt();
+        try {
+            this.workSpace = WorkSpaceLoader.loadWorkSpaceFromFile(files[choice]);
+        } catch (FileNotFoundException e) {
+            System.out.println("ERRORE: File non trovato.\n");
+        } catch (IOException e) {
+            System.out.println("ERRORE: Stream non inizializzato.\n");
+        } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
     }
 
 }

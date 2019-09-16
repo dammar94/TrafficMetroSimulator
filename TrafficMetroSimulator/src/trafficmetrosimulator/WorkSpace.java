@@ -5,6 +5,12 @@
  */
 package trafficmetrosimulator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import org.graphstream.graph.Node;
 
@@ -14,7 +20,7 @@ import org.graphstream.graph.Node;
  *
  * @author damiano
  */
-public class WorkSpace {
+public class WorkSpace implements Serializable {
 
     private final String nomeWorkSpace;
     /**
@@ -100,4 +106,18 @@ public class WorkSpace {
         return "TODO";
     }
 
+    /**
+     * Salva in memoria persistente la WorkSpace.
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    void saveInHardDrive() throws FileNotFoundException, IOException {
+        FileOutputStream f = new FileOutputStream(new File(this.nomeWorkSpace + ".wrsp"));
+        ObjectOutputStream o = new ObjectOutputStream(f);
+        // Write objects to file
+        o.writeObject(this);
+        o.close();
+        f.close();
+    }
+    
 }
