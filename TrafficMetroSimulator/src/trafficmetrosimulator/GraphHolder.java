@@ -5,15 +5,25 @@
  */
 package trafficmetrosimulator;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+import org.graphstream.algorithm.AStar;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.EdgeRejectedException;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
+import org.graphstream.ui.spriteManager.Sprite;
+import org.graphstream.ui.spriteManager.SpriteManager;
+import org.graphstream.ui.view.View;
+import org.graphstream.ui.view.Viewer;
 
 /**
  * Questa classe ha lo scopo di gestire e riassumere in maniera trasparente
@@ -22,14 +32,36 @@ import org.graphstream.graph.implementations.SingleGraph;
  * @author damiano
  */
 public class GraphHolder {
+    // StyleSheet
+    private static String STYLESHEET = 
+            "node {\n" +
+            "	size: 15px;\n" +
+            "	fill-color: grey;\n" +
+            "	z-index: 0;\n" +
+            "}\n" +
+            "\n" +
+            "edge {\n" +
+            "	shape: line;\n" +
+            "	size: 2px;\n" +
+            "	fill-mode: dyn-plain;\n" +
+            "	fill-color: green, orange, red;\n" +
+            "	arrow-size: 3px, 2px;\n" +
+            "}";
     private ArrayList<ArrayList<String>> fermate;
     /**
      * Questo è il grafo contenuto nell'holder, oggetto di tutte le operazioni.
      */
     Graph graph;
+    SpriteManager sman;
     
     public GraphHolder(ArrayList<ArrayList<String>> fermate) {
         this.fermate = fermate;
+    }
+
+    GraphHolder(Graph g) {
+        this.graph = g;
+        this.sman = new SpriteManager(graph);
+        // L'array fermate è null in questo caso!
     }
 
     /**
@@ -71,7 +103,16 @@ public class GraphHolder {
             }
         }
         this.graph = graph;
-        //graph.display();
+        this.sman = new SpriteManager(graph);
+        this.graph.addAttribute("ui.stylesheet", GraphHolder.STYLESHEET);
+        this.graph.addAttribute("ui.quality");
+        this.graph.addAttribute("ui.antialias");
+        for(Edge edge: graph.getEachEdge()) {
+            edge.setAttribute("ui.color", 0);
+        }
+//        for(Node node: graph.getEachNode()) {
+//            node.setAttribute("ui.color", 0);
+//        }
     }
 
     /**
@@ -88,7 +129,7 @@ public class GraphHolder {
     }
 
     void displayGraph() {
-        this.graph.display();
+        graph.display(true);
     }
 
     Node getNodeByName(String name) {
@@ -104,8 +145,9 @@ public class GraphHolder {
         for(int i=0; i<fermate.size(); i++) {
             if(linea.equals(fermate.get(i).get(0))) { //La linea è quella giusta.
                 ArrayList<String> l = fermate.get(i);
-                if(direzione.equals(l.get(0))) { //La direzione è quella giusta.
-                    for(int j=l.size(); j>0; j--){
+                //l.remove(0);
+                if(direzione.equals(l.get(1))) { //La direzione è quella giusta.
+                    for(int j=l.size()-1; j>0; j--){
                         Node nodo = this.getNodeByName(l.get(j));
                         listaNodes.add(nodo);
                     }
@@ -125,8 +167,9 @@ public class GraphHolder {
         for(int i=0; i<fermate.size(); i++) {
             if(linea.equals(fermate.get(i).get(0))) { //La linea è quella giusta.
                 ArrayList<String> l = fermate.get(i);
-                if(direzione.equals(l.get(0))) { //La direzione è quella giusta.
-                    for(int j=l.size(); j>1; j--){
+                //l.remove(0);
+                if(direzione.equals(l.get(1))) { //La direzione è quella giusta.
+                    for(int j=l.size()-1; j>1; j--){
                         Edge edge = this.getEdgeByNodeNames(l.get(j), l.get(j-1));
                         listaEdges.add(edge);
                     }
@@ -143,13 +186,52 @@ public class GraphHolder {
 
     private Edge getEdgeByNodeNames(String nodo1, String nodo2) {
         try{
-            return this.graph.getEdge(nodo1 + "-" + nodo2);
+            Edge edge = this.graph.getEdge(nodo1 + "-" + nodo2);
+            if (edge != null) {
+                return edge;
+            }
+            else {
+                return this.graph.getEdge(nodo2 + "-" + nodo1);
+            }
         } catch (IdAlreadyInUseException exc) {
             return this.graph.getEdge(nodo2 + "-" + nodo1);
         } catch (EdgeRejectedException exc) {
             return this.graph.getEdge(nodo2 + "-" + nodo1);
-        } finally {
+        } 
+    }
 
+    List<Node> getNodePath(String startNode, String arrivalNode) {
+        AStar astar = new AStar(graph);
+        astar.compute(startNode, arrivalNode); // with A and Z node identifiers in the graph.
+        Path path = astar.getShortestPath();
+        return path.getNodePath();
+    }
+
+    /**
+     * Restituisce un reference allo Sprite creato.
+     * @return 
+     */
+    Sprite getSprite(String string) {
+        //SpriteManager sman = new SpriteManager(graph);
+        return sman.addSprite(string);
+    }
+
+    synchronized void removeSprite(String id) {
+        this.sman.removeSprite(id);
+    }
+
+    void populate(HashMap<Node, Float> nodesColor) {
+        for(Node node : graph.getEachNode()) {
+            Float f = 0f;
+            nodesColor.put(node, f);
         }
     }
+
+    void renderNodesColor(HashMap<Node, Float> nodesColor) {
+        for(Node node : this.graph.getEachNode()) {
+            Float color = nodesColor.get(node);
+            node.setAttribute("ui.color", color);
+        }
+    }
+    
 }

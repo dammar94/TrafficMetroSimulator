@@ -281,7 +281,7 @@ public class Display {
             //Otteniamo la frequency di generazione.
             do {
                 repeat = false;
-                println("Inserire quanti viaggiatori generare ogni ora:");
+                println("Inserire quanti viaggiatori generare ogni minuto:");
                 Scanner in3 = new Scanner(System.in);
                 try {
                     frequency = in3.nextInt();

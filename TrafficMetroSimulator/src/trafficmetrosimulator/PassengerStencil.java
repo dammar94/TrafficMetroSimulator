@@ -22,7 +22,7 @@ public class PassengerStencil implements Serializable {
      */
     String startNode;
     String arrivalNode;
-    int frequency;
+    int frequency; // quanti Passenger generare ogni minuto.
     
     public PassengerStencil(String startNode, String arrivalNode, int frequency) {
         this.startNode = startNode;

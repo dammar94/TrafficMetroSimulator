@@ -9,22 +9,30 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
 
 /**
  *
  * @author damiano
  */
 class TransportGenerator extends Thread {
+    public static int COUNTER = 0; // contatore dei Transport creati
     private final TransportStencil transportStencil;
     private ArrayList<Node> tragittoNodi;
     private ArrayList<Edge> tragittoEdge;
     private int currentTime = 0;
     private int lastTransportDepartureTime = 0;
     private boolean running = true;
+    boolean waiting = false;
+    private GraphHolder graphHolder;
+    private final SimulationEngine sm;
 
-    public TransportGenerator(TransportStencil transportStencil, GraphHolder graphHolder) {
+    public TransportGenerator(SimulationEngine sm, TransportStencil transportStencil, GraphHolder graphHolder) {
+        this.graphHolder = graphHolder;
         this.transportStencil = transportStencil;
+        this.sm = sm;
         initialise(graphHolder);
     }
 
@@ -32,12 +40,16 @@ class TransportGenerator extends Thread {
     public void run() {
         this.lastTransportDepartureTime = this.currentTime; // Allinea i tempi all'avvio.
         while(running){
-            if(currentTime - lastTransportDepartureTime > transportStencil.cadency) {
+            if(currentTime - lastTransportDepartureTime >= transportStencil.cadency) {
                 this.departTransport();
                 lastTransportDepartureTime = currentTime;
             }
             try {
-                wait();
+                synchronized(this) {
+                    waiting = true;
+                    wait();
+                    waiting = false;
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(TransportGenerator.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -58,8 +70,41 @@ class TransportGenerator extends Thread {
      * Fai partire un Transport.
      */
     private void departTransport() {
-        Transport t = new Transport(tragittoNodi, tragittoEdge, transportStencil.capacity); 
-        t.start();
+        synchronized(sm){
+            Transport t = new Transport(sm, graphHolder, tragittoNodi, tragittoEdge, transportStencil.capacity, 
+                    transportStencil.linea, transportStencil.direzione); 
+            t.start();
+        }
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+//        Graph g = new SingleGraph("grafo");
+//        Node nodo1 = g.addNode("uno");
+//        Node nodo2 = g.addNode("due");
+//        Node nodo3 = g.addNode("tre");
+//        Edge edge1 = g.addEdge("uno - due", nodo1, nodo2);
+//        Edge edge2 = g.addEdge("due - tre", nodo2, nodo3);
+//        ArrayList<Node> tragittoNodi = new ArrayList<>();
+//        tragittoNodi.add(nodo1);
+//        tragittoNodi.add(nodo2);
+//        tragittoNodi.add(nodo3);
+//        ArrayList<Edge> tragittoEdge = new ArrayList<>();
+//        tragittoEdge.add(edge1);
+//        tragittoEdge.add(edge2);
+//        Transport t = new Transport(tragittoNodi, tragittoEdge, 50);
+//        t.start();
+    }
+
+    synchronized void notifyTransportGenerator() {
+        notify();
+    }
+
+    void render() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
